@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers sources\VulnContourne">
+      <UniqueIdentifier>{119733e2-8b10-4351-a357-664982266053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Utils">
+      <UniqueIdentifier>{175db21b-526f-4465-8b5f-f339afe20434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Sig">
+      <UniqueIdentifier>{376d5cfb-a2cf-4d59-8a1b-8427c26357f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Load">
+      <UniqueIdentifier>{91b3bd32-7859-405d-906b-90fed503a379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Driver">
+      <UniqueIdentifier>{668f4560-d7c1-4473-ba10-b2ce5e52acd3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Secure.cpp">
+      <Filter>Fichiers sources\VulnContourne</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Hwd.cpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Scan.cpp">
+      <Filter>Fichiers sources\Sig</Filter>
+    </ClCompile>
+    <ClCompile Include="Load.h">
+      <Filter>Fichiers sources\Load</Filter>
+    </ClCompile>
+    <ClCompile Include="Contourne.cpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClCompile>
+    <ClCompile Include="driver_data.cpp">
+      <Filter>Fichiers sources\Driver</Filter>
+    </ClCompile>
+    <ClCompile Include="Load.cpp">
+      <Filter>Fichiers sources\Load</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Contourne.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Secure.h">
+      <Filter>Fichiers sources\VulnContourne</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="lazy.hpp">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="xor.h">
+      <Filter>Fichiers sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Scan.h">
+      <Filter>Fichiers sources\Sig</Filter>
+    </ClInclude>
+    <ClInclude Include="skCrypt.h">
+      <Filter>Fichiers sources\Load</Filter>
+    </ClInclude>
+    <ClInclude Include="driver_data.h">
+      <Filter>Fichiers sources\Driver</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
