@@ -12,7 +12,6 @@
 #include <filesystem>
 #include "Load.h"
 
-
 #pragma comment(lib, "ntdll.lib")
 #pragma comment(lib, "advapi32.lib")
 
@@ -23,13 +22,13 @@ namespace driver
 		inline bool delete_service_entry(const std::string& service_name)
 		{
 			HKEY reg_handle;
-			static const std::string reg_key("System\\CurrentControlSet\\Services\\");
+			static const std::string reg_key( ("System\\CurrentControlSet\\Services\\"));
 
 			auto result = RegOpenKeyA(HKEY_LOCAL_MACHINE, reg_key.c_str(), &reg_handle);
 
 			if (result != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to open registry key for deletion : " << result << std::endl;
+				std::cerr <<  ("[ERROR] Failed to open registry key for deletion : ") << result << std::endl;
 				return false;
 			}
 
@@ -41,40 +40,40 @@ namespace driver
 		inline bool create_service_entry(const std::string& drv_path, const std::string& service_name)
 		{
 			HKEY reg_handle;
-			std::string reg_key("System\\CurrentControlSet\\Services\\");
+			std::string reg_key( ("System\\CurrentControlSet\\Services\\"));
 			reg_key += service_name;
 
 			auto result = RegCreateKeyA(HKEY_LOCAL_MACHINE, reg_key.c_str(), &reg_handle);
 
 			if (result != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to create registry key for service : " << service_name << std::endl;
+				std::cerr <<  ("[ERROR] Failed to create registry key for service : ") << service_name << std::endl;
 				return false;
 			}
 			constexpr std::uint8_t type_value = 1;
-			if (RegSetValueExA(reg_handle, "Type", NULL, REG_DWORD, &type_value, 4u) != ERROR_SUCCESS)
+			if (RegSetValueExA(reg_handle,  ("Type"), NULL, REG_DWORD, &type_value, 4u) != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to set 'Type' value." << std::endl;
+				std::cerr <<  ("[ERROR] Failed to set 'Type' value.") << std::endl;
 				return false;
 			}
 
 			constexpr std::uint8_t error_control_value = 3;
-			if (RegSetValueExA(reg_handle, "ErrorControl", NULL, REG_DWORD, &error_control_value, 4u) != ERROR_SUCCESS)
+			if (RegSetValueExA(reg_handle,  ("ErrorControl"), NULL, REG_DWORD, &error_control_value, 4u) != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to set 'ErrorControl' value." << std::endl;
+				std::cerr <<  ("[ERROR] Failed to set 'ErrorControl' value.") << std::endl;
 				return false;
 			}
 
 			constexpr std::uint8_t start_value = 3;
-			if (RegSetValueExA(reg_handle, "Start", NULL, REG_DWORD, &start_value, 4u) != ERROR_SUCCESS)
+			if (RegSetValueExA(reg_handle,  ("Start"), NULL, REG_DWORD, &start_value, 4u) != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to set 'Start' value." << std::endl;
+				std::cerr <<  ("[ERROR] Failed to set 'Start' value.") << std::endl;
 				return false;
 			}
 
-			if (RegSetValueExA(reg_handle, "ImagePath", NULL, REG_SZ, (std::uint8_t*)drv_path.c_str(), drv_path.size()) != ERROR_SUCCESS)
+			if (RegSetValueExA(reg_handle,  ("ImagePath"), NULL, REG_SZ, (std::uint8_t*)drv_path.c_str(), drv_path.size()) != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to set 'ImagePath' value." << std::endl;
+				std::cerr <<  ("[ERROR] Failed to set 'ImagePath' value.") << std::endl;
 				return false;
 			}
 			return ERROR_SUCCESS == RegCloseKey(reg_handle);
@@ -85,14 +84,14 @@ namespace driver
 			HANDLE token_handle = nullptr;
 			if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token_handle))
 			{
-				std::cerr << "[ERROR] Failed to open process token." << std::endl;
+				std::cerr <<  ("[ERROR] Failed to open process token.") << std::endl;
 				return false;
 			}
 
 			LUID luid{};
 			if (!LookupPrivilegeValueA(nullptr, privilege_name.data(), &luid))
 			{
-				std::cerr << "[ERROR] Failed to lookup privilege value : " << privilege_name << std::endl;
+				std::cerr <<  ("[ERROR] Failed to lookup privilege value : ") << privilege_name << std::endl;
 				CloseHandle(token_handle);
 				return false;
 			}
@@ -104,7 +103,7 @@ namespace driver
 
 			if (!AdjustTokenPrivileges(token_handle, FALSE, &token_state, sizeof(TOKEN_PRIVILEGES), nullptr, nullptr))
 			{
-				std::cerr << "[ERROR] Failed to adjust token privileges." << std::endl;
+				std::cerr <<  ("[ERROR] Failed to adjust token privileges.") << std::endl;
 				CloseHandle(token_handle);
 				return false;
 			}
@@ -118,23 +117,23 @@ namespace driver
 			HKEY reg_handle;
 			DWORD bytes_read;
 			char image_path[0xFF] = { 0 };
-			static const std::string reg_key("System\\CurrentControlSet\\Services\\");
+			static const std::string reg_key( ("System\\CurrentControlSet\\Services\\"));
 
 			auto result = RegOpenKeyA(HKEY_LOCAL_MACHINE, reg_key.c_str(), &reg_handle);
 
 			if (result != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to open registry key to get image path for : " << service_name << std::endl;
+				std::cerr <<  ("[ERROR] Failed to open registry key to get image path for : ") << service_name << std::endl;
 				return {};
 			}
 
-			result = RegGetValueA(reg_handle, service_name.c_str(), "ImagePath", REG_SZ, NULL, image_path, &bytes_read);
+			result = RegGetValueA(reg_handle, service_name.c_str(),  ("ImagePath"), REG_SZ, NULL, image_path, &bytes_read);
 
 			RegCloseKey(reg_handle);
 
 			if (result != ERROR_SUCCESS)
 			{
-				std::cerr << "[ERROR] Failed to get 'ImagePath' for service : " << service_name << std::endl;
+				std::cerr <<  ("[ERROR] Failed to get 'ImagePath' for service : ") << service_name << std::endl;
 				return {};
 			}
 			return std::string(image_path);
@@ -142,23 +141,23 @@ namespace driver
 	}
 	std::tuple<NTSTATUS, std::string> load(const std::string& drv_path, const std::string& service_name)
 	{
-		if (!util::enable_privilege("SeLoadDriverPrivilege"))
+		if (!util::enable_privilege( ("SeLoadDriverPrivilege")))
 		{
-			std::cerr << "[ERROR] Failed to enable 'SeLoadDriverPrivilege'." << std::endl;
+			std::cerr <<  ("[ERROR] Failed to enable 'SeLoadDriverPrivilege'.") << std::endl;
 			return { STATUS_PRIVILEGE_NOT_HELD, "" };
 		}
 
-		if (!util::create_service_entry("\\??\\" + std::filesystem::absolute(std::filesystem::path(drv_path)).string(), service_name))
+		if (!util::create_service_entry( ("\\??\\") + std::filesystem::absolute(std::filesystem::path(drv_path)).string(), service_name))
 		{
-			std::cerr << "[ERROR] Failed to create service entry." << std::endl;
+			std::cerr <<  ("[ERROR] Failed to create service entry.") << std::endl;
 			return { STATUS_OBJECT_NAME_NOT_FOUND, "" };
 		}
 
-		std::string reg_path("\\Registry\\Machine\\System\\CurrentControlSet\\Services\\");
+		std::string reg_path( ("\\Registry\\Machine\\System\\CurrentControlSet\\Services\\"));
 		reg_path += service_name;
 
 		static const auto lp_nt_load_drv =
-			::GetProcAddress(GetModuleHandleA("ntdll.dll"), "NtLoadDriver");
+			::GetProcAddress(GetModuleHandleA( ("ntdll.dll")),  ("NtLoadDriver"));
 
 		if (lp_nt_load_drv)
 		{
@@ -170,13 +169,13 @@ namespace driver
 			auto status = reinterpret_cast<nt_load_driver_t>(lp_nt_load_drv)(&driver_reg_path_unicode);
 			RtlFreeUnicodeString(&driver_reg_path_unicode);
 			if (!NT_SUCCESS(status))
-				std::cerr << "[ERROR] Failed to load driver, NTSTATUS : " << std::hex << status << std::dec << "\n";
+				std::cerr <<  ("[ERROR] Failed to load driver, NTSTATUS : ") << std::hex << status << std::dec <<  ("\n");
 
 
 			return { status,service_name };
 		}
 
-		std::cerr << "[ERROR] NtLoadDriver function not found.\n";
+		std::cerr <<  ("[ERROR] NtLoadDriver function not found.\n");
 		return { STATUS_PROCEDURE_NOT_FOUND, "" };
 	}
 
@@ -242,13 +241,13 @@ namespace driver
 
 	bool unload(const std::string& service_name)
 	{
-		std::string reg_path("\\Registry\\Machine\\System\\CurrentControlSet\\Services\\");
+		std::string reg_path( ("\\Registry\\Machine\\System\\CurrentControlSet\\Services\\"));
 		reg_path += service_name;
 
 		static const auto lp_nt_unload_drv =
 			::GetProcAddress(
-				GetModuleHandleA("ntdll.dll"),
-				"NtUnloadDriver"
+				GetModuleHandleA( ("ntdll.dll")),
+				 ("NtUnloadDriver")
 			);
 
 		if (lp_nt_unload_drv)
@@ -280,7 +279,7 @@ namespace driver
 
 				}
 				else {
-					std::cerr << "[ERROR] Failed To Remove Temp Files or lock , GetLastError was :  " << GetLastError() << "\n";
+					std::cerr <<  ("[ERROR] Failed To Remove Temp Files or lock , GetLastError was :  ") << GetLastError() <<  ("\n");
 					return false;
 
 				}
@@ -288,7 +287,7 @@ namespace driver
 
 			}
 			catch (const std::exception& e) {
-				std::cerr << "[ERROR] Exeception On Removing File :  " << e.what() << "\n";
+				std::cerr <<  ("[ERROR] Exeception On Removing File :  ") << e.what() <<  ("\n");
 				return false;
 			}
 
@@ -297,7 +296,7 @@ namespace driver
 
 
 		}
-		std::cerr << "[ERROR] NtUnloadDriver function was not  found  !! (can not unload at all).";
+		std::cerr <<  ("[ERROR] NtUnloadDriver function was not  found  !! (can not unload at all).");
 
 		return false;
 	}

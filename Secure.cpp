@@ -13,7 +13,7 @@ namespace Secure
     {
         if (DeviceHandle == INVALID_HANDLE_VALUE)
         {
-            std::cerr << "[ERROR] ReadVirtualMemory : Invalid device handle." << std::endl;
+            std::cerr <<  (" [ERROR] ReadVirtualMemory : Invalid device handle.") << std::endl;
             return FALSE;
         }
 
@@ -38,7 +38,7 @@ namespace Secure
 
         if (!status)
         {
-            std::cerr << "[ERROR] ReadVirtualMemory : DeviceIoControl failed with error code : " << GetLastError() << std::endl;
+            std::cerr <<  (" [ERROR] ReadVirtualMemory : DeviceIoControl failed with error code : ") << GetLastError() << std::endl;
         }
         return status;
     }
@@ -51,7 +51,7 @@ namespace Secure
     {
         if (DeviceHandle == INVALID_HANDLE_VALUE)
         {
-            std::cerr << "[ERROR] WriteVirtualMemory : Invalid device handle." << std::endl;
+            std::cerr <<  (" [ERROR] WriteVirtualMemory : Invalid device handle.") << std::endl;
             return FALSE;
         }
         PDFW_MEMCPY request;
@@ -76,7 +76,7 @@ namespace Secure
         );
         if (!status)
         {
-            std::cerr << "[ERROR] WriteVirtualMemory : DeviceIoControl failed with error code : " << GetLastError() << std::endl;
+            std::cerr <<  (" [ERROR] WriteVirtualMemory : DeviceIoControl failed with error code : ") << GetLastError() << std::endl;
         }
         return status;
     }

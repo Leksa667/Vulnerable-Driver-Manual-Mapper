@@ -11,7 +11,7 @@ std::optional<ULONG64> KernelUtils::get_ntoskrnl_base()
 	else
 	{
 		DWORD error = GetLastError();
-		std::cerr << "[ERROR] Could not enumerate device drivers. Error code: " << error << std::endl;
+		std::cerr <<  (" [ERROR] Could not enumerate device drivers. Error code: ") << error << std::endl;
 		return {};
 	}
 }
@@ -30,7 +30,7 @@ std::optional<ULONG64> KernelUtils::get_se_validate_image_header_offset()
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[ERROR] Failed to get HeaderOffset. Exception : " << e.what() << "\n";
+		std::cerr <<  (" [ERROR] Failed to get HeaderOffset. Exception : ") << e.what() << "\n";
 		return {};
 	}
 }
@@ -49,7 +49,7 @@ std::optional<ULONG64> KernelUtils::get_se_validate_image_data_offset()
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[ERROR] Failed to get DataOffset. Exception : " << e.what() << "\n";
+		std::cerr <<  (" [ERROR] Failed to get DataOffset. Exception : ") << e.what() << "\n";
 		return {};
 	}
 
@@ -65,7 +65,7 @@ std::optional<ULONG64> KernelUtils::get_return_offset()
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[ERROR] Failed to get ReturnOffset. Exception : " << e.what() << "\n";
+		std::cerr <<  (" [ERROR] Failed to get ReturnOffset. Exception : ") << e.what() <<  ("\n");
 		return {};
 	}
 
@@ -84,7 +84,7 @@ std::optional<ULONG64> KernelUtils::get_patch_gaurd_offset()
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[ERROR] Failed to get PGOffset. Exception : " << e.what() << "\n";
+		std::cerr <<  (" [ERROR] Failed to get PGOffset. Exception : ") << e.what() <<  ("\n");
 		return {};
 	}
 }
@@ -98,7 +98,7 @@ std::optional<ULONG64> KernelUtils::get_patch_gaurd_value_offset()
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[ERROR] Failed to get PGdValueOffset. Exception : " << e.what() << "\n";
+		std::cerr <<  (" [ERROR] Failed to get PGdValueOffset. Exception : ") << e.what() <<  ("\n");
 		return {};
 	}
 }

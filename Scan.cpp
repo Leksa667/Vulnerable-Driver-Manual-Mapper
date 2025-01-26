@@ -16,14 +16,14 @@ namespace scanner
             }
 
             if (byte_str.length() != 2) {
-                throw std::runtime_error("Invalid byte in IDA signature : " + byte_str);
+                throw std::runtime_error( ("Invalid byte in IDA signature : ") + byte_str);
             }
 
             char* end;
             long value = strtol(byte_str.c_str(), &end, 16);
 
             if (*end != '\0') {
-                throw std::runtime_error("Invalid byte in IDA signature : " + byte_str);
+                throw std::runtime_error( ("Invalid byte in IDA signature : ") + byte_str);
             }
 
             bytes.push_back(static_cast<uint8_t>(value));
@@ -38,13 +38,13 @@ namespace scanner
         m_module_handle = LoadLibraryA(m_module_name.c_str());
 
         if (m_module_handle == nullptr) {
-            throw std::runtime_error("Could not find module : " + m_module_name);
+            throw std::runtime_error( ("Could not find module : ") + m_module_name);
         }
 
         MODULEINFO mi = { 0 };
 
         if (!GetModuleInformation(GetCurrentProcess(), m_module_handle, &mi, sizeof(mi))) {
-            throw std::runtime_error("Could not get module information");
+            throw std::runtime_error( ("Could not get module information"));
         }
         m_module_size = mi.SizeOfImage;
     }

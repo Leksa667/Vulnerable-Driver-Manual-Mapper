@@ -13,7 +13,7 @@ std::string get_disk_volume_serial_number()
     DWORD maxComponentLength = 0;
     DWORD fileSystemFlags = 0;
 
-    if (GetVolumeInformationA("C:\\", volumeName, ARRAYSIZE(volumeName),
+    if (GetVolumeInformationA( ("C:\\"), volumeName, ARRAYSIZE(volumeName),
         &serialNumber, &maxComponentLength, &fileSystemFlags,
         fileSystemName, ARRAYSIZE(fileSystemName)))
     {
@@ -24,7 +24,7 @@ std::string get_disk_volume_serial_number()
     else
     {
         DWORD error = GetLastError();
-        std::cerr << "Failed to get volume information. Error code: " << error << std::endl;
+        std::cerr <<  ("Failed to get volume information. Error code: ") << error << std::endl;
         return "";
     }
 }
